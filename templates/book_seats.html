@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}Book Tickets | Sandhika Booking{% endblock %}
+{% block content %}
+
+{% set role_map = {'junior': 'Junior Sailor', 'senior': 'Senior Sailor', 'officer': 'Officer'} %}
+{% set user_role = current_user.role.lower() %}
+{% set allowed_role = role_map[user_role] %}
+
+<h2>🎟️ Book Your Seats</h2>
+
+<!-- Movie & Showtime Selection -->
+<form method="GET" class="seat-form-row" action="{{ url_for('user.book_tickets') }}" id="movieShowtimeForm" autocomplete="off">
+  <div class="form-selects">
+    <select name="movie_id" id="movieSelect" required>
+      <option value="">🎬 Select Movie</option>
+      {% for movie in movies %}
+        <option value="{{ movie.id }}" {% if movie.id == selected_movie_id %}selected{% endif %}>{{ movie.title }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="showtime_id" id="showtimeSelect" required>
+      <option value="">🕒 Select Showtime</option>
+      {# will be filled by JS #}
+    </select>
+
+    <button type="submit" class="btn">🔍 View Seats</button>
+  </div>
+</form>
+
+{% if selected_showtime_id %}
+  <div class="legend" style="margin-bottom:25px;">
+    <span class="available">Available</span>
+    <span class="booked">Booked</span>
+    <span class="restricted">Restricted</span>
+  </div>
+
+  <form method="POST" action="{{ url_for('user.book_tickets') }}" id="bookingForm" style="display:flex; flex-direction:column; align-items:center;">
+    <input type="hidden" name="showtime_id" value="{{ selected_showtime_id }}">
+
+    <!-- Seat Count Inputs -->
+    <div class="count-row">
+      <label>👤 Self:
+        <input type="number" name="self_count" id="self_count" value="0" min="0" max="1">
+      </label>
+      <label>👪 Dependents:
+        <input type="number" name="dependent_count" id="dependent_count" value="0" min="0" max="{{ dependents|length }}">
+      </label>
+      <label>🎟️ Guests:
+        <input type="number" name="guest_count" id="guest_count" value="0" min="0" max="10">
+      </label>
+    </div>
+
+    <!-- Seat Grid -->
+    <div class="seat-scroll">
+      <table class="seat-cinema">
+        <tbody>
+        {% for row in 'ABCDEFGHIJKLM' %}
+          <tr>
+            <th>{{ row }}</th>
+            {% for col in range(1, 11) %}
+              {% set seat_label = row ~ col %}
+              {% set seat = seats|selectattr('label', 'equalto', seat_label)|first %}
+              {% if seat %}
+                {% set booked = seat.id in booked_seat_ids %}
+                {% set allowed = seat.restricted == allowed_role %}
+                <td>
+                  <input type="checkbox"
+                         name="seat_ids"
+                         value="{{ seat.id }}"
+                         id="seat{{ seat.id }}"
+                         class="seat-checkbox"
+                         {% if booked or not allowed %}disabled{% endif %}>
+                  <label for="seat{{ seat.id }}"
+                         class="seat-label {% if booked %}disabled{% elif not allowed %}restricted{% endif %}">
+                    {{ seat.label }}
+                  </label>
+                </td>
+              {% else %}
+                <td></td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align:center; margin-top:30px;">
+      <button type="submit" class="btn" style="font-size: 1.15em; padding: 16px 44px;">✅ Confirm Booking</button>
+    </div>
+  </form>
+{% endif %}
+
+<!-- Page JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type=checkbox][name=seat_ids]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        const label = document.querySelector(`label[for="${this.id}"]`);
+        if (label) label.classList.toggle('selected', this.checked);
+      });
+    });
+
+    document.getElementById('bookingForm')?.addEventListener('submit', function(e){
+      const selfC = parseInt(document.getElementById('self_count').value) || 0;
+      const depC  = parseInt(document.getElementById('dependent_count').value) || 0;
+      const guestC= parseInt(document.getElementById('guest_count').value) || 0;
+      const total = selfC + depC + guestC;
+      const checked = Array.from(document.querySelectorAll('input[name=seat_ids]:checked')).length;
+
+      if (total !== checked) {
+        e.preventDefault();
+        alert(`Select seats for all participants (${total})!`);
+        return;
+      }
+      if (guestC > 0) {
+        alert('₹50 per guest to be paid at counter.');
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function updateShowtimes(movieId, selectedShowtimeId) {
+      const showtimeSelect = document.getElementById('showtimeSelect');
+      showtimeSelect.innerHTML = '<option value="">Loading...</option>';
+      if (!movieId) {
+        showtimeSelect.innerHTML = '<option value="">🕒 Select Showtime</option>';
+        return;
+      }
+      fetch('/user/get_showtimes/' + movieId)
+        .then(r => r.json())
+        .then(data => {
+          let options = '<option value="">🕒 Select Showtime</option>';
+          if (data.length > 0) {
+            data.forEach(show => {
+              const sel = (String(show.id) === String(selectedShowtimeId)) ? 'selected' : '';
+              options += `<option value="${show.id}" ${sel}>${show.date} ${show.time}</option>`;
+            });
+          } else {
+            options += '<option value="">No showtimes</option>';
+          }
+          showtimeSelect.innerHTML = options;
+        })
+        .catch(() => {
+          showtimeSelect.innerHTML = '<option value="">Error loading</option>';
+        });
+    }
+
+    const movieSelect = document.getElementById('movieSelect');
+    const selectedShowtimeId = "{{ selected_showtime_id or '' }}";
+
+    if (movieSelect.value) {
+      updateShowtimes(movieSelect.value, selectedShowtimeId);
+    }
+    movieSelect.addEventListener('change', function() {
+      updateShowtimes(this.value, null);
+    });
+  });
+</script>
+
+{% endblock %}

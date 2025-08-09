@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Sandhika Booking{% endblock %}
+
+{% block content %}
+<main class="home-main" style="text-align: center;">
+  <h1 style="margin-bottom: 30px;">Welcome to Sandhika Booking System</h1>
+
+  {% if session.get('awaiting_approval') %}
+    <div style="background: #ffcc00; color: rgb(253, 26, 26); padding: 15px; border-radius: 10px; font-weight: bold; max-width: 500px; margin: 20px auto;">
+      🕒 Your account is pending admin approval. You will be able to log in once approved.
+    </div>
+  {% endif %}
+
+  {% if not current_user.is_authenticated %}
+    <a href="{{ url_for('auth.register') }}" class="btn" style="margin: 10px;">📝 Please register yourself</a>
+
+  {% else %}
+    <a href="{{ url_for('user.dashboard') }}" class="btn" style="margin: 10px;">🏠 Go to Dashboard</a>
+  {% endif %}
+</main>
+{% endblock %}

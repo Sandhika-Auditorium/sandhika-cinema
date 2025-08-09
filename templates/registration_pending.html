@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Approval</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="home-page">
+    <div class="overlay">
+        <nav class="navbar">
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+            </ul>
+        </nav>
+
+        <div class="form-container">
+            <h2>Thank you, {{ user.name }}!</h2>
+            <p>Your registration is submitted successfully.</p>
+            <p>An admin will review and approve your account shortly.</p>
+        </div>
+    </div>
+</body>
+</html>

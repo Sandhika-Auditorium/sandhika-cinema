@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile - Sandhika Cinema</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='images/sandhika-building.jpg') }}');
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 51, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 30px;
+        }
+
+        .navbar .title {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .navbar .menu a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+        }
+
+        .navbar .menu a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background-color: rgba(0, 0, 51, 0.7);
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .info {
+            line-height: 2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="title">Sandhika Cinema</div>
+    <div class="menu">
+        <a href="{{ url_for('auth.home') }}">Home</a>
+        <a href="{{ url_for('user.book_tickets') }}">Book Tickets</a>
+        <a href="#">My Bookings</a>
+        <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>User Profile</h2>
+    <div class="info">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Role:</strong> {{ user.role }}</p>
+        <p><strong>Category:</strong> {{ user.category }}</p>
+    </div>
+</div>
+
+</body>
+</html>

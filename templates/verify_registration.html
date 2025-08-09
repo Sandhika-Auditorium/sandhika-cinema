@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP - Sandhika Booking{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 60px auto; padding: 30px; background-color: rgba(0,0,0,0.6); border-radius: 12px;">
+  <h2 style="text-align: center; color: #ffd700;">Enter OTP</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}" style="color: white; margin-bottom: 10px;">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('auth.verify_registration') }}">
+    <input type="hidden" name="email" value="{{ email }}">
+    
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">OTP sent to {{ email }}</label><br>
+      <input type="text" name="otp" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+
+    <div>
+      <button type="submit" style="width: 100%; padding: 10px; background-color: #ffd700; border: none; border-radius: 6px;">Verify & Register</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

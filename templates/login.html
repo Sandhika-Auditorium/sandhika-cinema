@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div style="max-width: 450px; margin: 80px auto; padding: 30px; background-color: rgba(0,0,0,0.6); border-radius: 12px;">
+  <h2 style="text-align: center; color: #ffd700;">User Login</h2>
+  <form method="POST" action="{{ url_for('auth.login') }}">
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Email:</label><br>
+      <input type="email" name="email" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Password:</label><br>
+      <input type="password" name="password" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+    <button type="submit" class="btn" style="width: 100%;">Login</button>
+  </form>
+  <div style="text-align: center; margin-top: 10px;">
+    <a href="{{ url_for('auth.forgot_password') }}" style="color: #ffd700; text-decoration: underline;">Forgot password?</a>
+  </div>
+</div>
+{% endblock %}

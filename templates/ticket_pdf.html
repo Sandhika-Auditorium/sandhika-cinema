@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sandhika Movie Ticket</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; background: #fff; }
+        .ticket-box {
+            border: 2px solid #1fa67a;
+            border-radius: 12px;
+            padding: 30px;
+            width: 350px;
+            margin: 30px auto;
+            background: #f8faff;
+        }
+        h2 { text-align: center; color: #1fa67a; }
+        .info { margin-bottom: 12px; }
+        .qr-box { text-align: center; margin-top: 25px; }
+        .seats { font-size: 1.1em; letter-spacing: 1px; color: #21294c; }
+    </style>
+</head>
+<body>
+    <div class="ticket-box">
+        <h2>🎟️ Sandhika Booking</h2>
+        <hr>
+        <div class="info"><b>Movie:</b> {{ movie.title }}</div>
+        <div class="info"><b>Date:</b> {{ showtime.date.strftime('%d %b %Y') }}</div>
+        <div class="info"><b>Time:</b> {{ showtime.time.strftime('%I:%M %p') }}</div>
+        <div class="info seats"><b>Seats:</b> {{ seat_labels | join(', ') }}</div>
+        <div class="info"><b>Status:</b> {{ booking.status|capitalize }}</div>
+        <div class="info"><b>Booked for:</b> {{ booking.booked_for or "Self" }}</div>
+        {% if booking.extra_guests and booking.extra_guests > 0 %}
+        <div class="info" style="color:#c63;"><b>Guests:</b> {{ booking.extra_guests }} (₹50/guest to be paid at counter)</div>
+        {% endif %}
+        <hr>
+        <div style="text-align:center; font-size:12px; margin-top:10px; color:#888;">
+            Sandhika Booking System | {{ booking.id }}
+        </div>
+    </div>
+</body>
+</html>

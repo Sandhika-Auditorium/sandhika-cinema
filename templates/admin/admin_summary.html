@@ -1,0 +1,39 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}Seat Summary{% endblock %}
+{% block content %}
+<h2 class="mb-4 text-light">Seat Summary</h2>
+<form method="GET" action="{{ url_for('admin_routes.admin_summary') }}" class="row g-2 mb-3">
+  <div class="col-md-5">
+    <select name="movie_id" class="form-select">
+      <option value="">All Movies</option>
+      {% for movie in movies %}
+        <option value="{{ movie.id }}" {% if movie.id == selected_movie_id %}selected{% endif %}>{{ movie.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-5">
+    <input type="date" name="date" class="form-control" value="{{ selected_date or '' }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-warning w-100">Filter</button>
+  </div>
+</form>
+<div class="table-responsive">
+<table class="table table-bordered table-dark table-sm">
+  <tr>
+    <th>Movie</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Seats Booked</th>
+  </tr>
+  {% for row in showtime_bookings %}
+  <tr>
+    <td>{{ row.showtime.movie.title }}</td>
+    <td>{{ row.showtime.date.strftime("%d-%b-%Y") }}</td>
+    <td>{{ row.showtime.time.strftime("%H:%M") }}</td>
+    <td>{{ row.seats or "-" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

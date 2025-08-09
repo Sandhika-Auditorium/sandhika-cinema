@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Dependent{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 60px; color: white;">
+  <h2 style="text-align:center;">Add Dependent</h2>
+
+  <form method="POST" action="{{ url_for('user.add_dependent') }}" style="max-width: 400px; margin: 30px auto;">
+    <div style="margin-bottom: 15px;">
+      <label for="name">Dependent Name:</label><br>
+      <input type="text" name="name" id="name" required style="width: 100%; padding: 10px; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label for="age">Age:</label><br>
+      <input type="number" name="age" id="age" min="1" required style="width: 100%; padding: 10px; border-radius: 5px;">
+    </div>
+
+    <div style="text-align:center;">
+      <button type="submit" class="btn">Add Dependent</button>
+    </div>
+  </form>
+
+  <div style="text-align:center; margin-top: 10px;">
+    <a href="{{ url_for('user.view_dependents') }}" class="btn" style="background-color: grey;">Back</a>
+  </div>
+</div>
+
+<style>
+  .btn {
+    background-color: navy;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #004080;
+  }
+</style>
+{% endblock %}

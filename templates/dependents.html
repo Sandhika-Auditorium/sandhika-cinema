@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dependents{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 60px; color: white;">
+  <h2 style="text-align:center;">My Dependents</h2>
+
+  {% if dependents %}
+    <table style="width: 60%; margin: 20px auto; border-collapse: collapse; color: white;">
+      <tr style="background-color: navy; color: white;">
+        <th style="padding: 10px;">Name</th>
+        <th style="padding: 10px;">Age</th>
+      </tr>
+      {% for dep in dependents %}
+      <tr style="text-align: center;">
+        <td style="padding: 10px;">{{ dep.name }}</td>
+        <td style="padding: 10px;">{{ dep.age }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p style="text-align:center; margin-top: 30px;">No dependents added yet.</p>
+  {% endif %}
+
+  <div style="text-align:center; margin-top: 20px;">
+    <a href="{{ url_for('user.add_dependent') }}" class="btn">Add New Dependent</a>
+  </div>
+</div>
+
+<style>
+  .btn {
+    background-color: navy;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #004080;
+  }
+</style>
+{% endblock %}

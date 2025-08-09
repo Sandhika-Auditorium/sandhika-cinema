@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Sandhika Booking{% endblock %}
+{# Friendly mapping for role to display label #}
+{% set role_map = {'junior': 'Junior Sailor', 'senior': 'Senior Sailor', 'officer': 'Officer'} %}
+
+
+{% block content %}
+<h2 style="text-align: center; margin-bottom: 30px;">🏠 Welcome, {{ current_user.full_name }}!</h2>
+
+<!-- Profile Summary -->
+<div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; text-align: left;">
+  <h3 style="color: #ffcc00;">👤 Profile Details</h3>
+  <p><strong>Email:</strong> {{ current_user.email }}</p>
+  <p>
+  <strong>Category:</strong>
+  {{ role_map.get(current_user.role, current_user.role|title) }}
+</p>
+  <p><strong>Approved:</strong> {{ '✅ Yes' if current_user.is_approved else '❌ No' }}</p>
+</div>
+
+
+{% endblock %}

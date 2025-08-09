@@ -1,0 +1,41 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}Manage Movies{% endblock %}
+{% block content %}
+<h2 class="mb-4 text-light">Movies List</h2>
+<div class="accordion" id="moviesAccordion">
+  {% for movie in movies %}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="movie{{ movie.id }}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ movie.id }}">
+        <strong>{{ movie.title }}</strong>
+        <span class="badge bg-secondary ms-2">{{ movie.duration }} min</span>
+      </button>
+    </h2>
+    <div id="collapse{{ movie.id }}" class="accordion-collapse collapse" data-bs-parent="#moviesAccordion">
+      <div class="accordion-body">
+        <div class="mb-2">{{ movie.description }}</div>
+        <form action="{{ url_for('admin_routes.delete_movie', movie_id=movie.id) }}" method="POST" onsubmit="return confirm('Delete this movie?');">
+          <button type="submit" class="btn btn-danger btn-sm">Delete Movie</button>
+        </form>
+        <hr>
+        <strong>Showtimes:</strong>
+        <ul>
+          {% for show in showtimes if show.movie_id == movie.id %}
+            <li>
+              {{ show.date.strftime('%d-%b-%Y') }} {{ show.time.strftime('%H:%M') }}
+              <form action="{{ url_for('admin_routes.delete_showtime', showtime_id=show.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this showtime?');">
+                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2 ms-2">×</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="text-muted">No showtimes</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% else %}
+    <p class="text-light">No movies found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

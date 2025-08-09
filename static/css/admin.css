@@ -1,0 +1,451 @@
+/* ------------------- GLOBAL STYLES ------------------- */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    color: #fff;
+    background: 
+    linear-gradient(
+        rgba(26,32,44,0.62),    /* much lighter overlay */
+        rgba(26,32,44,0.62)
+    ),
+    url("/static/images/sandhika-building.jpg") no-repeat center center fixed;
+background-size: cover;
+}
+
+
+.admin-main-panel, .container, main {
+    background: rgba(26,32,44, 0.76);
+    border-radius: 18px;
+    box-shadow: 0 8px 30px #18183455;
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(2.5px);
+    margin-top: 40px;
+}
+
+.container {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 20px 10px 60px 10px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    color: #ffc107;
+}
+
+/* Stylish admin navbar */
+.admin-navbar {
+    background: rgba(26,32,44,0.96);
+    background: linear-gradient(90deg, #1a202c 80%, #3a3f5c 100%);
+    box-shadow: 0 2px 14px #0005;
+    padding: 0 24px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-navbar .logo {
+    font-weight: bold;
+    font-size: 1.45em;
+    letter-spacing: 2px;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-navbar .logo img {
+    height: 36px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.admin-navbar .admin-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.admin-navbar .nav-link {
+    color: #e2e8f0;
+    padding: 7px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.admin-navbar .nav-link.active,
+.admin-navbar .nav-link:hover {
+    background: #ffd700;
+    color: #22224c;
+}
+
+.admin-navbar .logout-btn {
+    background: #ff4747;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 7px 18px;
+    margin-left: 18px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.17s;
+}
+.admin-navbar .logout-btn:hover {
+    background: #d7263d;
+}
+
+/* Mobile hamburger menu */
+.admin-navbar .navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffd700;
+    font-size: 2em;
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+@media (max-width: 850px) {
+    .admin-navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 10px;
+    }
+    .admin-navbar .admin-nav-menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        background: #1a202ccc;
+        margin-top: 10px;
+        border-radius: 0 0 12px 12px;
+        padding: 8px 0;
+    }
+    .admin-navbar .admin-nav-menu.show {
+        display: flex;
+    }
+    .admin-navbar .nav-link,
+    .admin-navbar .logout-btn {
+        width: 90vw;
+        margin: 3px auto;
+        text-align: left;
+    }
+    .admin-navbar .navbar-toggle {
+        display: block;
+        margin-left: auto;
+    }
+}
+
+
+
+.login-body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    color: #232344;
+    background:
+        linear-gradient(rgba(26,32,44,0.62), rgba(26,32,44,0.62)),
+        url("/static/images/sandhika-building.jpg") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-body .admin-login-glass {
+    background: rgba(26,32,44,0.92);
+    box-shadow: 0 8px 32px #18183499;
+    border-radius: 18px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    max-width: 300px;
+    width: 92vw;
+    padding: 32px 20px 26px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-body .login-logo {
+    margin-bottom: 10px;
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.login-body .admin-login-glass h2 {
+    margin-bottom: 20px;
+    color: #ffc107;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.login-body .flashes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+    width: 100%;
+    text-align: center;
+}
+.login-body .flashes li {
+    background: #272758;
+    color: #ffc107;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.login-body .admin-login-glass form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-body .admin-login-glass label {
+    margin-bottom: 6px;
+    margin-top: 13px;
+    color: #ffc107;
+    font-size: 1em;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+.login-body .admin-login-glass input[type="text"],
+.login-body .admin-login-glass input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+    background: #e9eeff;
+    color: #232344;
+    border: 1.5px solid #353567;
+    border-radius: 7px;
+    padding: 10px 13px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    transition: border 0.16s;
+    outline: none;
+}
+
+.login-body .admin-login-glass input:focus {
+    border-color: #ffc107;
+}
+
+.login-body .admin-login-glass button[type="submit"] {
+    width: 100%;
+    margin-top: 14px;
+    background: #ffc107;
+    color: #232344;
+    border: none;
+    border-radius: 7px;
+    padding: 11px 0;
+    font-size: 1.08em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #18183444;
+    transition: background 0.18s, color 0.18s;
+}
+.login-body .admin-login-glass button[type="submit"]:hover {
+    background: #ffd95c;
+    color: #1a202c;
+}
+
+@media (max-width: 500px) {
+    .login-body .admin-login-glass {
+        padding: 16px 5vw 16px 5vw;
+    }
+    .login-body .admin-login-glass h2 {
+        font-size: 1.1em;
+    }
+}
+
+
+/* ------------- NAVBAR (TOP, RESPONSIVE) ------------- */
+
+
+
+@media (max-width: 820px) {
+    .container { padding: 13px 4vw 50px 4vw; }
+    .navbar .nav-links { display: none; flex-direction: column; width: 100%; }
+    .navbar .nav-links.show { display: flex; background: #1a1a38; padding: 12px 0; }
+    .navbar .navbar-toggle { display: block; }
+}
+@media (max-width: 500px) {
+    .container { padding: 8px 2vw 45px 2vw; }
+    h1, h2 { font-size: 1.3em; }
+}
+
+/* ------------- ADMIN TABLES ------------- */
+.table {
+    width: 100%;
+    background: #232344;
+    border-collapse: collapse;
+    border-radius: 11px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.table th, .table td {
+    border: 1px solid #363670;
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 1em;
+    background: #232344;
+}
+
+.table th {
+    background: #202040;
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.table tr:nth-child(even) td {
+    background: #272758;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+
+/* -------- FORMS & BUTTONS -------- */
+input[type="text"], input[type="number"], input[type="date"], input[type="time"], textarea, select {
+    width: 100%;
+    
+    color: #fff;
+    border: 1.5px solid #353567;
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-size: 1em;
+    margin-bottom: 11px;
+    transition: border 0.16s;
+}
+
+
+input:focus, textarea:focus, select:focus {
+    border-color: #ffc107;
+    outline: none;
+}
+
+button, .btn {
+    background: #ffc107;
+    color: #212040;
+    border: none;
+    padding: 8px 18px;
+    font-size: 1em;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.18s, color 0.18s;
+    margin: 3px 0;
+}
+
+button:hover, .btn:hover, button:active, .btn:active {
+    background: #ffd95c;
+    color: #111135;
+}
+
+.btn-danger, .btn-outline-danger {
+    background: #d3212b;
+    color: #fff;
+}
+.btn-danger:hover, .btn-outline-danger:hover {
+    background: #b90a13;
+}
+
+.btn-success { background: #22bb44; color: #fff; }
+.btn-success:hover { background: #128f2a; }
+
+.btn-warning { background: #ffa500; color: #111135; }
+.btn-warning:hover { background: #ffc047; }
+
+.logout-btn {
+    background: #232344;
+    color: #ffc107;
+    border: 1.5px solid #ffc107;
+    margin-left: 15px;
+    padding: 6px 18px;
+}
+.logout-btn:hover { background: #ffc107; color: #232344; }
+
+.alert {
+    padding: 9px 13px;
+    border-radius: 6px;
+    margin: 9px 0 10px 0;
+    font-weight: 500;
+    font-size: 1em;
+    background: #272758;
+    color: #ffc107;
+}
+.alert.success, .alert-info { background: #223d22; color: #98ff96; }
+.alert.danger, .alert-error { background: #401f22; color: #ffb1b5; }
+.alert.warning { background: #55481b; color: #ffeb82; }
+
+@media (max-width: 600px) {
+    .table th, .table td { font-size: .95em; padding: 7px 3px; }
+    .navbar .logo { font-size: 1em; }
+}
+
+/* --------- ACCORDIONS --------- */
+.accordion {
+    background: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.accordion-item {
+    border: 1.5px solid #353567;
+    border-radius: 9px;
+    margin-bottom: 9px;
+    background: #202040;
+    color: #ffc107;
+}
+.accordion-button {
+    background: none;
+    border: none;
+    color: #ffc107;
+    font-size: 1.05em;
+    font-weight: 600;
+    text-align: left;
+    width: 100%;
+    padding: 10px 15px;
+}
+.accordion-button.collapsed { color: #ffc107; }
+.accordion-body { padding: 14px 15px; color: #fff; }
+
+/* --------- TABS --------- */
+.nav-tabs {
+    border-bottom: 2px solid #353567;
+}
+.nav-tabs .nav-link {
+    background: none;
+    border: none;
+    color: #ffc107;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px 8px 0 0;
+    margin-right: 3px;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-link:hover {
+    background: #272758;
+    color: #fff;
+}
+
+/* ----------- Utility ----------- */
+.mt-4 { margin-top: 1.5rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mt-5 { margin-top: 2.2rem !important; }
+.mb-5 { margin-bottom: 2.2rem !important; }
+.text-success { color: #4fff7b !important; }
+.text-danger { color: #ff7b89 !important; }
+.text-muted { color: #bbbbcc !important; }
+.text-warning { color: #ffa500 !important; }
+.text-info { color: #69b9ff !important; }
+.fw-bold { font-weight: bold !important; }

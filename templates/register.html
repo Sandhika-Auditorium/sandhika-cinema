@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Sandhika Booking{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 60px auto; padding: 30px; background-color: rgba(0,0,0,0.6); border-radius: 12px;">
+  <h2 style="text-align: center; color: #ffd700;">Register</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}" style="color: white; margin-bottom: 10px;">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('auth.send_otp') }}">
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Full Name:</label><br>
+      <input type="text" name="full_name" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Email:</label><br>
+      <input type="email" name="email" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Password:</label><br>
+      <input type="password" name="password" required style="width: 100%; padding: 10px; border-radius: 6px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="color:white;">Select Role:</label><br>
+      <select name="role" required style="width: 100%; padding: 10px; border-radius: 6px;">
+        <option value="">-- Choose Role --</option>
+        <option value="junior">Junior Sailor</option>
+        <option value="senior">Senior Sailor</option>
+        <option value="officer">Officer</option>
+      </select>
+    </div>
+
+    <div>
+      <button type="submit" style="width: 100%; padding: 10px; background-color: #ffd700; border: none; border-radius: 6px;">Send OTP</button>
+    </div>
+  </form>
+
+  <div style="text-align: center; margin-top: 15px;">
+    <p style="color:white;">Already have an account? <a href="{{ url_for('auth.login') }}" style="color:#ffd700;">Login here</a></p>
+  </div>
+</div>
+{% endblock %}

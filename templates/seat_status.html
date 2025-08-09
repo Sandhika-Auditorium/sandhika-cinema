@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Seat Status | Admin{% endblock %}
+{% block content %}
+
+<h2 style="text-align:center;">🧾 Seat Booking Status (All Shows)</h2>
+
+{% for show, data in seat_map.items() %}
+  <div style="margin-top: 40px;">
+    <h3 style="color: #ffcc00;">🎬 {{ show.movie.title }} | 📅 {{ show.date.strftime('%Y-%m-%d') }} | ⏰ {{ show.time.strftime('%H:%M') }}</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px; margin: 20px 0;">
+      {% for seat in data.all_seats %}
+        {% set info = data.booked_seat_ids.get(seat.id) %}
+        <div style="
+            padding: 8px;
+            border-radius: 6px;
+            background-color: {% if info %}#cc0000{% else %}#004080{% endif %};
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        ">
+          {{ seat.label }}
+          {% if info %}
+            <div style="font-size: 0.8rem; margin-top: 4px;">
+              {{ info.user }}<br>
+              {{ info.role }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}

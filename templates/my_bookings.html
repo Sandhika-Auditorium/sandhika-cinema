@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings | Sandhika Booking{% endblock %}
+{% block content %}
+
+<h2>📋 My Bookings</h2>
+
+{% if not bookings %}
+  <p style="text-align:center; font-size: 1.05rem; color: #ffcc00;">
+    You have not booked any tickets yet.
+  </p>
+{% else %}
+
+  <div class="table-wrap">
+    <table class="table responsive-table">
+      <thead>
+        <tr>
+          <th>🎬 Movie</th>
+          <th>📅 Date</th>
+          <th>⏰ Time</th>
+          <th>🪑 Seats</th>
+          <th>❌ Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td data-label="Movie">{{ booking.showtime.movie.title }}</td>
+          <td data-label="Date">{{ booking.showtime.date.strftime('%Y-%m-%d') }}</td>
+          <td data-label="Time">{{ booking.showtime.time.strftime('%H:%M') }}</td>
+          <td data-label="Seats">
+            {% for seat in booking.seats %}
+              {{ seat.label }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+          </td>
+          <td data-label="Action" class="actions-cell">
+            <form method="POST"
+                  action="{{ url_for('user.cancel_booking', booking_id=booking.id) }}"
+                  onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+                  style="display:flex; gap:8px; width:100%; flex-wrap:wrap;">
+              <button type="submit" class="btn" style="background:#cc0000;">Cancel</button>
+              <a class="btn btn--lg"
+                 href="{{ url_for('user.download_ticket', booking_id=booking.id) }}"
+                 target="_blank">Download Ticket (PDF)</a>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Sandhika Booking{% endblock %}</title>
+
+  <!-- Single font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+</head>
+<body>
+
+  <!-- NAVBAR (blue bar, centered brand, hamburger left) -->
+  <nav aria-label="Primary">
+    <div class="nav-inner">
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainMenu">☰</button>
+
+      <a href="{{ url_for('auth.home') }}" class="logo-link"></a>
+
+      <ul id="mainMenu">
+        <li><a href="{{ url_for('auth.home') }}" class="{% if request.endpoint == 'auth.home' %}active-link{% endif %}">🏠 Home</a></li>
+
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_approved %}
+            <li><a href="{{ url_for('user.dashboard') }}" class="{% if request.endpoint == 'user.dashboard' %}active-link{% endif %}">📋 Dashboard</a></li>
+            <li><a href="{{ url_for('user.book_tickets') }}" class="{% if request.endpoint == 'user.book_tickets' %}active-link{% endif %}">🎟️ Book Tickets</a></li>
+            <li><a href="{{ url_for('user.my_bookings') }}" class="{% if request.endpoint == 'user.my_bookings' %}active-link{% endif %}">🪑 My Bookings</a></li>
+            <li><a href="{{ url_for('user.view_dependents') }}" class="{% if request.endpoint == 'user.view_dependents' %}active-link{% endif %}">👨‍👩‍👧 Dependents</a></li>
+          {% endif %}
+          <li><a href="{{ url_for('auth.logout') }}" class="{% if request.endpoint == 'auth.logout' %}active-link{% endif %}">🚪 Logout</a></li>
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}" class="{% if request.endpoint == 'auth.register' %}active-link{% endif %}">📝 Register</a></li>
+          <li><a href="{{ url_for('auth.login') }}" class="{% if request.endpoint == 'auth.login' %}active-link{% endif %}">🔑 Login</a></li>
+          <li><a href="{{ url_for('admin_routes.admin_dashboard') }}" class="{% if request.endpoint == 'admin_routes.admin_dashboard' %}active-link{% endif %}">🛠️ Admin</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Session-Based Approval Message -->
+  {% if session.get('awaiting_approval') %}
+    <div style="background-color: rgba(255, 215, 0, 0.9); color: black; padding: 12px; text-align: center; font-weight: bold;">
+      🕒 Your account has been created and is pending admin approval.
+    </div>
+    <script>fetch("{{ url_for('auth.clear_approval_flag') }}");</script>
+  {% endif %}
+
+  <!-- Logged-in Pending Approval -->
+  {% if current_user.is_authenticated and not current_user.is_approved %}
+    <div class="approval-warning">
+      ⏳ Your account is pending admin approval. You will not be able to book tickets until approved.
+    </div>
+  {% endif %}
+
+  <!-- Page Content -->
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Toast Script -->
+  <script>
+    function showToast(message, type = "info") {
+      const colors = { success:"#28a745", error:"#dc3545", warning:"#ffc107", info:"#007bff" };
+      const el = document.createElement("div");
+      el.className = "toast";
+      el.textContent = message;
+      el.style.backgroundColor = colors[type] || "#333";
+      document.getElementById("toast-container").appendChild(el);
+      setTimeout(()=>{ el.style.opacity="0"; setTimeout(()=>el.remove(), 500); }, 4000);
+    }
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        showToast({{ message|tojson }}, {{ category|tojson }});
+      {% endfor %}
+    {% endwith %}
+  </script>
+
+  <!-- Hamburger toggle -->
+  <script>
+    (function () {
+      const toggle = document.querySelector('.nav-toggle');
+      const menu   = document.getElementById('mainMenu');
+      if (!toggle || !menu) return;
+
+      const setExpanded = (open) => {
+        toggle.setAttribute('aria-expanded', String(open));
+        menu.classList.toggle('show', open);
+      };
+
+      toggle.addEventListener('click', () => setExpanded(!menu.classList.contains('show')));
+
+      // Close when clicking a link (mobile)
+      menu.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A' && matchMedia('(max-width: 900px)').matches) setExpanded(false);
+      });
+
+      // Close if clicking outside (mobile)
+      document.addEventListener('click', (e) => {
+        const inside = menu.contains(e.target) || toggle.contains(e.target);
+        if (!inside && matchMedia('(max-width: 900px)').matches) setExpanded(false);
+      });
+
+      // Reset on desktop
+      addEventListener('resize', () => {
+        if (!matchMedia('(max-width: 900px)').matches) setExpanded(false);
+      });
+
+      // ESC to close
+      addEventListener('keydown', (e) => { if (e.key === 'Escape') setExpanded(false); });
+    })();
+  </script>
+</body>
+</html>
