@@ -2,9 +2,10 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from flask_login import login_required, current_user
 from app.models import User, Dependent, Booking, Showtime, Seat, Movie
 from app import db
-import io
-import pdfkit
-from flask import send_file, render_template, jsonify
+import io  # keep only if you still use it elsewhere; not needed for xhtml2pdf path below
+from flask import send_file, render_template, jsonify, make_response, abort
+from app.utils import render_pdf_from_template, make_pdf_response
+
 from datetime import datetime
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -161,33 +162,21 @@ def download_ticket(booking_id):
 
     showtime = Showtime.query.get(booking.showtime_id)
     movie = Movie.query.get(showtime.movie_id)
+
     seat_labels = []
     for sid in booking.seat_numbers.split(','):
-        if sid.strip():
+        sid = sid.strip()
+        if sid:
             seat = Seat.query.get(int(sid))
             if seat:
                 seat_labels.append(seat.label)
 
-    # Render an HTML template for the ticket
-    rendered = render_template(
-        'ticket_pdf.html',
-        booking=booking,
-        showtime=showtime,
-        movie=movie,
-        seat_labels=seat_labels
-    )
+    ctx = {"booking": booking, "showtime": showtime, "movie": movie, "seat_labels": seat_labels}
+    pdf_bytes = render_pdf_from_template('ticket_pdf.html', **ctx)
+    if not pdf_bytes:
+        return "Error generating PDF", 500
 
-    # Path to wkhtmltopdf (update as needed for your PC)
-    config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-
-    # Convert HTML to PDF
-    pdf = pdfkit.from_string(rendered, False, configuration=config)
-    return send_file(
-        io.BytesIO(pdf),
-        download_name=f"Ticket_{booking.id}.pdf",
-        as_attachment=True,
-        mimetype='application/pdf'
-    )
+    return make_pdf_response(pdf_bytes, filename=f"Ticket_{booking.id}.pdf", inline=True)
 
 @user_bp.route('/profile')
 @login_required
