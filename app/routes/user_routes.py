@@ -1,19 +1,14 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, send_file
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, current_user
+from datetime import datetime
 from app.models import User, Dependent, Booking, Showtime, Seat, Movie
 from app import db
-import io  # keep only if you still use it elsewhere; not needed for xhtml2pdf path below
-from flask import send_file, render_template, jsonify, make_response, abort
-from app.utils import render_pdf_from_template, make_pdf_response
-
-from datetime import datetime
+from app.utils import render_pdf_from_template, make_pdf_response  
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
-# ROLE LOGIC
 ROLE_PRIORITY = {'junior': 1, 'senior': 2, 'officer': 3}
 ROLE_MAP = {'junior': 'Junior Sailor', 'senior': 'Senior Sailor', 'officer': 'Officer'}
-
 
 # DASHBOARD
 @user_bp.route('/dashboard')
@@ -162,7 +157,7 @@ def download_ticket(booking_id):
 
     showtime = Showtime.query.get(booking.showtime_id)
     movie = Movie.query.get(showtime.movie_id)
-
+    # seats chosen for this booking
     seat_labels = []
     for sid in booking.seat_numbers.split(','):
         sid = sid.strip()
@@ -171,12 +166,40 @@ def download_ticket(booking_id):
             if seat:
                 seat_labels.append(seat.label)
 
-    ctx = {"booking": booking, "showtime": showtime, "movie": movie, "seat_labels": seat_labels}
-    pdf_bytes = render_pdf_from_template('ticket_pdf.html', **ctx)
+# --- Build "ticket_for" summary (no DB change needed) ---
+    total = len(seat_labels)
+    guests = int(booking.extra_guests or 0)
+    has_self = (total - guests) >= 1  # assume user included if at least 1 seat left after guests
+    dependents = max(0, total - guests - (1 if has_self else 0))
+
+    parts = []
+    if has_self:
+        parts.append("Self")
+    if dependents > 0:
+        parts.append(f"{dependents} Dependent{'s' if dependents > 1 else ''}")
+    if guests > 0:
+        parts.append(f"{guests} Guest{'s' if guests > 1 else ''}")
+    ticket_for = " + ".join(parts) if parts else "—"
+
+# pass to template
+    ctx = {
+    "booking": booking,
+    "showtime": showtime,
+    "movie": movie,
+    "seat_labels": seat_labels,
+    "ticket_for": ticket_for,
+    }
+    pdf_bytes = render_pdf_from_template("ticket_pdf.html", **ctx)
     if not pdf_bytes:
         return "Error generating PDF", 500
 
-    return make_pdf_response(pdf_bytes, filename=f"Ticket_{booking.id}.pdf", inline=True)
+    return make_pdf_response(
+    pdf_bytes,
+    filename=f"Ticket_{movie.title.replace(' ', '_')}.pdf",
+    inline=True
+)
+
+
 
 @user_bp.route('/profile')
 @login_required
