@@ -32,5 +32,14 @@ def create_app():
         from seat_seeder import seed_seats_if_empty  # Since it's in project root
         seed_seats_if_empty()
 
+    @app.get("/health")
+    def health():
+        return {"ok": True}
+    @app.get("/")
+    def index():
+        return "Sandhika is running. Go to /login."
+
+
+
     return app
 
